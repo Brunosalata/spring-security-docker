@@ -1,6 +1,8 @@
 package br.com.brunosalata.springsecurity_docker.entities;
 
+import br.com.brunosalata.springsecurity_docker.controller.dto.LoginRequestDTO;
 import jakarta.persistence.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Set;
 import java.util.UUID;
@@ -61,5 +63,9 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public boolean isLoginCorrect(LoginRequestDTO loginRequest, PasswordEncoder passwordEncoder) {
+        return passwordEncoder.matches(loginRequest.password(), this.password);
     }
 }
