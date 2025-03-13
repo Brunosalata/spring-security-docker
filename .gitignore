@@ -84,5 +84,6 @@ build/
 .vscode/
 
 # Ignorar a chave privada
-private_key.pem
-private_key.key
+keypair.pem
+private.pem
+public.pem
