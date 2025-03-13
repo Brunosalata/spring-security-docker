@@ -83,7 +83,7 @@ build/
 ### VS Code ###
 .vscode/
 
-# Ignorar a chave privada
-keypair.pem
-private.pem
-public.pem
+# Ignorar chaves privadas
+*.pem
+*.key
+secrets/
