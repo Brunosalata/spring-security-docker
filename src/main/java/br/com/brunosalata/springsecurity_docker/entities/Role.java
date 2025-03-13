@@ -45,5 +45,6 @@ public class Role {
         public long getRoleId() {
             return roleId;
         }
+
     }
 }
