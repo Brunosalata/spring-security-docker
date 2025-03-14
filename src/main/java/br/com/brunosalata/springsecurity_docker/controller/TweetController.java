@@ -1,10 +1,14 @@
 package br.com.brunosalata.springsecurity_docker.controller;
 
 import br.com.brunosalata.springsecurity_docker.controller.dto.CreateTweetDTO;
+import br.com.brunosalata.springsecurity_docker.controller.dto.TweetItemDTO;
+import br.com.brunosalata.springsecurity_docker.controller.dto.TweetResponseDTO;
 import br.com.brunosalata.springsecurity_docker.entities.Role;
 import br.com.brunosalata.springsecurity_docker.entities.Tweet;
 import br.com.brunosalata.springsecurity_docker.repository.TweetRepository;
 import br.com.brunosalata.springsecurity_docker.repository.UserRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
@@ -26,6 +30,20 @@ public class TweetController {
     public TweetController(TweetRepository tweetRepository, UserRepository userRepository) {
         this.tweetRepository = tweetRepository;
         this.userRepository = userRepository;
+    }
+
+    @GetMapping("/feed")
+    public ResponseEntity<TweetResponseDTO> findAll(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                    @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+        var tweets = tweetRepository.findAll(PageRequest.of(page, pageSize, Sort.Direction.DESC, "creationTimestamp"))
+                .map(tweet -> new TweetItemDTO(
+                        tweet.getTweetId(),
+                        tweet.getContent(),
+                        tweet.getUser().getUsername())
+                );
+
+        return ResponseEntity.ok(new TweetResponseDTO(
+                tweets.getContent(), page, pageSize, tweets.getTotalPages(), tweets.getTotalElements()));
     }
 
     @PostMapping("/tweets")
